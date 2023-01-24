@@ -1,31 +1,30 @@
-let http = require('http')
-let fs = require('fs')
-let url = require('url')
+// let http = require('http')
+// let fs = require('fs')
+// let url = require('url')
+const express = require('express');
+const path = require('path');
 
-http.createServer((req, res) =>{
-    let q = url.parse(req.url, true)
-    let filename = '.' + q.pathname + '.html'
-    if (filename == './.html'){
-        fs.readFile('index.html', function(err, data) {
-            res.writeHead(200, {'Content-Type': 'text/html'});
-            res.write(data);
-          });
-    }
-    else{
-            fs.readFile(filename, (err, data) => {
-                    if (err) {
-                        fs.readFile('404.html',function(err,data){
-                            if (err) throw err;
-                            res.writeHead(200,{'Content-Type':'text/html'});
-                            res.write(data);
-                            return res.end;
-                        });
-                      } 
-        else {res.writeHead(200,
-            {'Content-Type': 'text/html'});
-            res.write(data)}
-    })
-    }
+const app = express();
+const port = process.env.PORT || 8080;
 
+// sendFile will go here
+app.get('/', function(req, res) {
+  res.sendFile(path.join(__dirname, '/index.html'));
+});
 
-}).listen(8080)
+app.get('/about', function(req, res) {
+    console.log(path)
+  res.sendFile(path.join(__dirname, '/about.html'));
+});
+
+app.get('/contact', function(req, res) {
+    console.log(path)
+  res.sendFile(path.join(__dirname, '/contact-me.html'));
+});
+
+app.get('*', function(req, res){
+    res.sendFile(path.join(__dirname, '/404.html'));
+  });
+
+app.listen(port);
+console.log('Server started at http://localhost:' + port);
